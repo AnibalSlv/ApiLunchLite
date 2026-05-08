@@ -6,7 +6,6 @@ package cmd
 import (
 	"fmt"
 
-	"apiLunchLite/internal/database"
 	"apiLunchLite/models"
 
 	"github.com/spf13/cobra"
@@ -24,7 +23,7 @@ var addApiCmd = &cobra.Command{
 			PathFolder: Api.PathFolder,
 		}
 
-		database.Save(Api.DbConn, item)
+		apiMgr.AddApi(item)
 
 		fmt.Println("Api Agregada:")
 		fmt.Printf("Nombre: %s\n", Api.Name)
