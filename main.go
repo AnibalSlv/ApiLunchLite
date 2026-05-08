@@ -6,21 +6,36 @@ package main
 import (
 	"apiLunchLite/cmd"
 	"apiLunchLite/internal/database"
+	"apiLunchLite/internal/services"
+	"apiLunchLite/internal/services/manager"
+	"apiLunchLite/models"
 	"log"
 
 	"database/sql"
 )
 
 func main() {
-	db, err := sql.Open("sqlite", "DbAPL.db")
+	conn, err := sql.Open("sqlite", "DbAPL.db")
 	if err != nil {
 		log.Fatal("Error Open Db:", err)
 	}
-	defer db.Close()
+	defer conn.Close()
 
-	database.InitDb()
+	repo := &database.SQLite{DbConn: conn}
 
-	cmd.SetDb(db)
+	// Se crea un crotato (interfaz)
+	var db models.Db = repo
 
-	cmd.Execute()
+	db.InitDb()
+
+	miLogger := &services.Logger{
+		FolderLogs: "internal/logs",
+	}
+
+	ApiManager := &manager.ApiManager{
+		Logger: miLogger,
+		Db:     db,
+	}
+
+	cmd.Execute(ApiManager)
 }

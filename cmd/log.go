@@ -1,44 +1,54 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
-	"apiLunchLite/internal/database"
+	"apiLunchLite/internal/utils"
 	"fmt"
-	"os"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
-// logCmd represents the log command
+var liveLog bool
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Muestra los log de la API",
 	Long:  ``,
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) > 0 {
-			Api.Name = args[0]
 
-			result, err := database.GetName(Api.DbConn, Api.Name)
+		Api.Name = args[0]
 
-			if err != nil {
-				fmt.Print("Error Connection Db: ", err)
-				return
-			}
+		file, err := apiMgr.Logger.GetLogFile(Api.Name)
 
-			fileLog, err := os.ReadFile("internal/logs/" + result.Name + ".log")
+		if err != nil {
+			fmt.Println("Error: ", err)
+		}
 
-			if err != nil {
-				fmt.Println("Error Read Log: ", err)
-				return
-			}
+		if !liveLog {
+			// Static Log
 
-			fmt.Print(string(fileLog))
+			apiMgr.Logger.ReadLog(file.Name())
+
+		} else {
+			// Live Log
+			utils.Clear()
+
+			green := color.New(color.FgGreen).SprintFunc()
+
+			fmt.Printf("%s %s %s \n\n",
+				green("Monitoreando log de:"),
+				green(Api.Name),
+				green("(Ctrl+C para salir y cerrar API)"),
+			)
+
+			apiMgr.Logger.LiveLog(file.Name())
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(logCmd)
+
+	logCmd.Flags().BoolVarP(&liveLog, "live", "l", false, "Ver el log en vivo de una API")
+
 }

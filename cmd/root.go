@@ -4,6 +4,7 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"apiLunchLite/internal/services/manager"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -12,7 +13,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "apiLunchLite",
-	Short: "descipcion breve de apiLunchLite",
+	Short: "apiLunchLite ordequestador de APIs",
 	Long:  `Estos son los comandos de ayuda de apiLunchLite`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
@@ -21,7 +22,11 @@ var rootCmd = &cobra.Command{
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
+var apiMgr *manager.ApiManager
+
+func Execute(mgr *manager.ApiManager) {
+	apiMgr = mgr // Guardamos el manager que viene del main
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)

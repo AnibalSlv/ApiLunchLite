@@ -12,14 +12,12 @@ import (
 
 type ApiType = models.ApiConfig
 
-// Crea una tabla en la db si no existe
-func InitDb() {
-	db, err := sql.Open("sqlite", "DbAPL.db")
-	if err != nil {
-		log.Fatal("Error Open Db:", err)
-	}
-	defer db.Close()
+type SQLite struct {
+	DbConn *sql.DB
+}
 
+// Crea una tabla en la d.DbConn si no existe
+func (d *SQLite) InitDb() error {
 	createTableSQL := `CREATE TABLE IF NOT EXISTS APIs (
 	"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	"name" TEXT,
@@ -30,49 +28,55 @@ func InitDb() {
 	"pid"  INTEGER DEFAULT 0
 	);`
 
-	_, err = db.Exec(createTableSQL)
+	_, err := d.DbConn.Exec(createTableSQL)
 	if err != nil {
 		log.Fatal("Error Create Table")
+		return err
 	}
 
+	return nil
 }
 
-func Save(db *sql.DB, Api ApiType) {
+func (d *SQLite) Save(Api ApiType) {
 	query := `INSERT INTO APIs (name, host, port, path_folder) VALUES (?, ?, ?, ?)`
 
-	_, err := db.Exec(query, Api.Name, Api.Host, Api.Port, Api.PathFolder)
+	_, err := d.DbConn.Exec(query, Api.Name, Api.Host, Api.Port, Api.PathFolder)
 	if err != nil {
 		fmt.Println("Error Save Data:", err)
 	}
 	fmt.Println("Data Save")
 }
 
-func UpdatePID(db *sql.DB, pid int, id int) {
+func (d *SQLite) UpdatePID(pid int, id int) error {
 	query := `UPDATE APIs SET pid = ? WHERE id = ?`
 
-	_, err := db.Exec(query, pid, id)
+	_, err := d.DbConn.Exec(query, pid, id)
 	if err != nil {
-		fmt.Println("Error Update PID: ", err)
+		return err
 	}
+
+	return nil
 }
 
-func UpdateState(db *sql.DB, state string, id int) {
+func (d *SQLite) UpdateState(state string, id int) error {
 	query := `UPDATE APIs SET state = ? WHERE id = ?`
 
-	_, err := db.Exec(query, state, id)
+	_, err := d.DbConn.Exec(query, state, id)
 	if err != nil {
-		fmt.Println("Error Update PID: ", err)
+		return err
 	}
+
+	return nil
 }
 
-func GetAll(db *sql.DB) ([]ApiType, error) {
+func (d *SQLite) GetAll() ([]ApiType, error) {
 	var Api ApiType
 	query := `SELECT id, name, host, port, path_folder, state, pid FROM APIs`
 
 	// ⁡⁢⁣⁣.Query()⁡ Es usado para los SELECT
-	rows, err := db.Query(query)
+	rows, err := d.DbConn.Query(query)
 	if err != nil {
-		fmt.Println("Error Select Data:", err)
+		return nil, err
 	}
 	// ⁡⁢⁣⁣defer:⁡ Cierra el proceso al terminar la funcion
 	// Se tiene que cerrar todo proceso que este ligado a un proceso del SO
@@ -102,16 +106,15 @@ func GetAll(db *sql.DB) ([]ApiType, error) {
 
 }
 
-func GetName(db *sql.DB, name string) (ApiType, error) {
+func (d *SQLite) GetName(name string) (ApiType, error) {
 	var Api ApiType
 
 	query := `SELECT id, name, host, port, path_folder, state, pid FROM APIs WHERE name = ?`
 
 	// Busca por nombre y devuelve los datos solicitado
-	err := db.QueryRow(query, name).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.PathFolder, &Api.State, &Api.Pid)
+	err := d.DbConn.QueryRow(query, name).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.PathFolder, &Api.State, &Api.Pid)
 
 	if err != nil {
-		fmt.Println("Error Search Name:", err)
 		return Api, err
 	}
 
@@ -119,12 +122,12 @@ func GetName(db *sql.DB, name string) (ApiType, error) {
 
 }
 
-func GetId(db *sql.DB, id int) (ApiType, error) {
+func (d *SQLite) GetId(id int) (ApiType, error) {
 	var Api ApiType
 
 	query := `SELECT id, name, host, port, path_folder, state, pid FROM APIs WHERE id = ?`
 
-	err := db.QueryRow(query, id).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.PathFolder, &Api.State, &Api.Pid)
+	err := d.DbConn.QueryRow(query, id).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.PathFolder, &Api.State, &Api.Pid)
 
 	if err != nil {
 		fmt.Println("Error Select ID:", err)
@@ -132,4 +135,16 @@ func GetId(db *sql.DB, id int) (ApiType, error) {
 	}
 
 	return Api, nil
+}
+
+func (d *SQLite) Delete(id int) error {
+	query := `DELETE FROM APIs WHERE id = ?`
+
+	_, err := d.DbConn.Exec(query, id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
