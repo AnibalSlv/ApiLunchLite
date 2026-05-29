@@ -20,6 +20,7 @@ var addApiCmd = &cobra.Command{
 			Name:       Api.Name,
 			Host:       Api.Host,
 			Port:       Api.Port,
+			Path:       Api.Path,
 			PathFolder: Api.PathFolder,
 		}
 
@@ -29,7 +30,8 @@ var addApiCmd = &cobra.Command{
 		fmt.Printf("Nombre: %s\n", Api.Name)
 		fmt.Printf("Host: %s\n", Api.Host)
 		fmt.Printf("Port: %d\n", Api.Port)
-		fmt.Printf("Path: %s\n", Api.PathFolder)
+		fmt.Printf("Path: %s\n", Api.Path)
+		fmt.Printf("Path Folder: %s\n", Api.PathFolder)
 
 	},
 }
@@ -40,6 +42,7 @@ func init() {
 	addApiCmd.Flags().StringVarP(&Api.Name, "name", "n", "API", "Agreagarle un nombre a la API")
 	addApiCmd.Flags().StringVarP(&Api.Host, "host", "H", "localhost", "El Host para el server")
 	addApiCmd.Flags().IntVarP(&Api.Port, "port", "p", 8080, "Agregar un puerto")
+	addApiCmd.Flags().StringVarP(&Api.Path, "path", "P", "", "Agregar el path")
 	addApiCmd.Flags().StringVarP(&Api.PathFolder, "folder", "f", "", "Coloca la dirrecion de la carpeta de tu API")
 
 }
