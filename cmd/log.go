@@ -26,7 +26,6 @@ var logCmd = &cobra.Command{
 
 		if !liveLog {
 			// Static Log
-
 			apiMgr.Logger.ReadLog(file.Name())
 
 		} else {

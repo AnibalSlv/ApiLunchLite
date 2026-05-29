@@ -12,6 +12,7 @@ var checkCmd = &cobra.Command{
 	Short: "Muestra las APIs guardadas",
 	Long:  `Muestra las APIs guardadas y su estado`,
 	Run: func(cmd *cobra.Command, args []string) {
+		apiMgr.CheckLife()
 		apiMgr.Check()
 	},
 }
