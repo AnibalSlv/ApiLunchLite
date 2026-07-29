@@ -12,7 +12,7 @@ import (
 )
 
 var addApiCmd = &cobra.Command{
-	Use:   "addApi",
+	Use:   "add",
 	Short: "Agrega una Api",
 	Long:  `Utiliza addApi para agregar una api`,
 	Run: func(cmd *cobra.Command, args []string) {

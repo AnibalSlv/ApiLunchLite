@@ -3,6 +3,8 @@ package manager
 import (
 	"fmt"
 	"os"
+	"runtime"
+	"syscall"
 )
 
 func (m *ApiManager) Stop(nameStop string, forceStop bool) error {
@@ -13,21 +15,25 @@ func (m *ApiManager) Stop(nameStop string, forceStop bool) error {
 		return err
 	}
 
-	if forceStop {
+	procces, err := os.FindProcess(result.Pid)
+
+	if err != nil {
+		fmt.Println("No se encontró el proceso (ya podría estar detenido): ", err)
 		m.Db.UpdatePID(0, result.Id)
 		m.Db.UpdateState("stop", result.Id)
 		return err
 	}
 
-	procces, err := os.FindProcess(result.Pid)
-
-	if err != nil {
-		fmt.Println("Error Find PID: ", err)
-		return err
+	if forceStop {
+		err = procces.Kill()
+	} else {
+		if runtime.GOOS == "windows" {
+			err = procces.Kill()
+		} else {
+			// En Linux/macOS se usa la señal SIGTERM estándar
+			err = procces.Signal(syscall.SIGTERM)
+		}
 	}
-
-	// ! Se deberia de cambiar el .Kill() por otro metodo que mate el proceso no tan bruscamente
-	err = procces.Kill()
 
 	if err != nil {
 		fmt.Println("Error Close Process: ", err)

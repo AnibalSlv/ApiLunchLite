@@ -14,7 +14,8 @@ var stopCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "Detiene el daemon de la API",
 	Long: `Detiene el daemon de la API:
-			apl stop [nombre]`,
+			apl stop [Name API] -> Detiene el proceso de manera segura
+			apl stop [Name API] -f -> Fuerza el cierre del proceso`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 

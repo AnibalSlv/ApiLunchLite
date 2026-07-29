@@ -12,8 +12,9 @@ var liveLog bool
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Muestra los log de la API",
-	Long:  ``,
-	Args:  cobra.ExactArgs(1),
+	Long: `apl log [Name API] -> Para ver el log de manera estatica 
+			apl log [Name API] -l -> Para ver el log en vivo`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		Api.Name = args[0]
