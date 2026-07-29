@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
-	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 func (m *ApiManager) Check() error {
+
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 
@@ -33,17 +34,17 @@ func (m *ApiManager) Check() error {
 		displayState := utils.Capitalize(api.State)
 		switch api.State {
 		case "stop":
-			displayState = color.RedString(displayState)
+			displayState = utils.Stop(displayState)
 		case "run":
-			displayState = color.GreenString(displayState)
+			displayState = utils.Run(displayState)
 		default:
-			displayState = color.YellowString(displayState)
+			displayState = utils.Yellow(displayState)
 		}
 
 		t.AppendRow(table.Row{
 			api.Id,
 			api.Name,
-			fmt.Sprintf("%s:%d", api.Host, api.Port),
+			fmt.Sprintf("%s:%s", api.Host, utils.Yellow(strconv.Itoa(api.Port))),
 			displayState,
 			api.Pid,
 		})

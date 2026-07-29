@@ -16,7 +16,7 @@ import (
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Ejecuta el reverse proxy (EN PROCESO)",
-	Long:  ``,
+	Long:  `Recomendado no tocar`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Levantando servicios en segundo plano...")
 

@@ -12,8 +12,13 @@ func (m *ApiManager) Delete(apiName string) error {
 	result, err := m.Db.GetName(apiName)
 
 	if err != nil {
-		fmt.Print("Error Connection Db: ", err)
+		fmt.Print("No se encontro el servicio: ", err)
 		return err
+	}
+
+	if result.Pid != 0 {
+		fmt.Print("El servicio se esta ejecutando, no se puede borrar")
+		return nil
 	}
 
 	m.Db.Delete(result.Id)
