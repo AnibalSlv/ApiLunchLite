@@ -23,7 +23,6 @@ func (d *SQLite) InitDb() error {
 	"name" TEXT,
 	"host" TEXT,
 	"port" INTEGER,
-	"path" TEXT,
 	"path_folder" TEXT,
 	"state" TEXT DEFAULT "stop",
 	"pid"  INTEGER DEFAULT 0
@@ -39,9 +38,9 @@ func (d *SQLite) InitDb() error {
 }
 
 func (d *SQLite) Save(Api ApiType) {
-	query := `INSERT INTO APIs (name, host, port, path, path_folder) VALUES (?, ?, ?, ?, ?)`
+	query := `INSERT INTO APIs (name, host, port, path_folder) VALUES (?, ?, ?, ?)`
 
-	_, err := d.DbConn.Exec(query, Api.Name, Api.Host, Api.Port, Api.Path, Api.PathFolder)
+	_, err := d.DbConn.Exec(query, Api.Name, Api.Host, Api.Port, Api.PathFolder)
 	if err != nil {
 		fmt.Println("Error Save Data:", err)
 	}
@@ -72,7 +71,7 @@ func (d *SQLite) UpdateState(state string, id int) error {
 
 func (d *SQLite) GetAll() ([]ApiType, error) {
 	var Api ApiType
-	query := `SELECT id, name, host, port, path, path_folder, state, pid FROM APIs`
+	query := `SELECT id, name, host, port, path_folder, state, pid FROM APIs`
 
 	// ⁡⁢⁣⁣.Query()⁡ Es usado para los SELECT
 	rows, err := d.DbConn.Query(query)
@@ -92,7 +91,7 @@ func (d *SQLite) GetAll() ([]ApiType, error) {
 	for rows.Next() {
 		// ⁡⁢⁣⁣.Scan()⁡ le asisgna los valores a las variables en orden de llegada es decir:
 		// Como primero se esta recibiendo Id -> item.Id, luego Name -> item.Name
-		err := rows.Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.Path, &Api.PathFolder, &Api.State, &Api.Pid)
+		err := rows.Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.PathFolder, &Api.State, &Api.Pid)
 		if err != nil {
 			return nil, err
 		}
@@ -110,10 +109,10 @@ func (d *SQLite) GetAll() ([]ApiType, error) {
 func (d *SQLite) GetName(name string) (ApiType, error) {
 	var Api ApiType
 
-	query := `SELECT id, name, host, port, path, path_folder, state, pid FROM APIs WHERE name = ?`
+	query := `SELECT id, name, host, port, path_folder, state, pid FROM APIs WHERE name = ?`
 
 	// Busca por nombre y devuelve los datos solicitado
-	err := d.DbConn.QueryRow(query, name).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.Path, &Api.PathFolder, &Api.State, &Api.Pid)
+	err := d.DbConn.QueryRow(query, name).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.PathFolder, &Api.State, &Api.Pid)
 
 	if err != nil {
 		return Api, err
@@ -126,9 +125,9 @@ func (d *SQLite) GetName(name string) (ApiType, error) {
 func (d *SQLite) GetId(id int) (ApiType, error) {
 	var Api ApiType
 
-	query := `SELECT id, name, host, port, path, path_folder, state, pid FROM APIs WHERE id = ?`
+	query := `SELECT id, name, host, port, path_folder, state, pid FROM APIs WHERE id = ?`
 
-	err := d.DbConn.QueryRow(query, id).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.Path, &Api.PathFolder, &Api.State, &Api.Pid)
+	err := d.DbConn.QueryRow(query, id).Scan(&Api.Id, &Api.Name, &Api.Host, &Api.Port, &Api.PathFolder, &Api.State, &Api.Pid)
 
 	if err != nil {
 		fmt.Println("Error Select ID:", err)

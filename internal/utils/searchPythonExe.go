@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -34,6 +36,11 @@ func SearchPythonExe(path string) string {
 		}
 	}
 
-	//  Si no se encuentran coincidencias:
-	return ""
+	pythonPathGlobal, err := exec.LookPath("python3") // O simplemente "python" en Windows
+	if err != nil {
+		fmt.Println("No se encontró Python en el PATH global del sistema.")
+		return ""
+	}
+
+	return pythonPathGlobal
 }
