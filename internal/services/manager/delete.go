@@ -12,7 +12,7 @@ func (m *ApiManager) Delete(apiName string) error {
 	result, err := m.Db.GetName(apiName)
 
 	if err != nil {
-		fmt.Print("No se encontro el servicio: ", err)
+		fmt.Print("El servicio no existe")
 		return err
 	}
 

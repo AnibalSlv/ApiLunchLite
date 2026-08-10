@@ -5,7 +5,6 @@ type ApiConfig struct {
 	Name       string
 	Host       string
 	Port       int
-	Path       string
 	PathFolder string
 	State      string
 	Pid        int
