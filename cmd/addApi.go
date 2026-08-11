@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 
+	"apiLunchLite/internal/utils"
 	"apiLunchLite/models"
 
 	"github.com/spf13/cobra"
@@ -22,12 +24,11 @@ var addApiCmd = &cobra.Command{
 
 		apiMgr.AddApi(item)
 
-		fmt.Println("Api Agregada:")
+		fmt.Printf("\n%s\n", utils.Green("Api Agregada:"))
 		fmt.Printf("Nombre: %s\n", Api.Name)
 		fmt.Printf("Host: %s\n", Api.Host)
-		fmt.Printf("Port: %d\n", Api.Port)
-		fmt.Printf("Path Folder: %s\n", Api.PathFolder)
-
+		fmt.Printf("Port: %s\n", utils.Yellow(strconv.Itoa(Api.Port)))
+		fmt.Printf("Path Folder: %s\n\n", Api.PathFolder)
 	},
 }
 

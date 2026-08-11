@@ -44,7 +44,6 @@ func (d *SQLite) Save(Api ApiType) {
 	if err != nil {
 		fmt.Println("Error Save Data:", err)
 	}
-	fmt.Println("Data Save")
 }
 
 func (d *SQLite) UpdatePID(pid int, id int) error {

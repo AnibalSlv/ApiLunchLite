@@ -2,17 +2,17 @@ package manager
 
 import (
 	"apiLunchLite/internal/utils"
-	"fmt"
 	"os/exec"
 	"strconv"
 )
 
-func (m *ApiManager) Run(name string, nameModule string) error {
+func (m *ApiManager) Run(name string, nameModule string) (string, error, bool) {
+	inExecution := false
+
 	result, err := m.Db.GetName(name)
 
 	if err != nil {
-		fmt.Print("Error Connection Db: ", err)
-		return err
+		return "", err, inExecution
 	}
 
 	if result.Pid == 0 {
@@ -34,7 +34,7 @@ func (m *ApiManager) Run(name string, nameModule string) error {
 
 		logFile, err := m.Logger.GetLogFile(result.Name)
 		if err != nil {
-			return err
+			return "", err, inExecution
 		}
 
 		// Escribe en los archivos que le pidio al logger
@@ -44,16 +44,14 @@ func (m *ApiManager) Run(name string, nameModule string) error {
 		// Iniciamos el proceso sin bloquear el programa
 		err = uvicornCmd.Start()
 		if err != nil {
-			fmt.Println("Error al iniciar el proceso:", err)
-			return err
+			return "", err, inExecution
 		}
 
 		m.Db.UpdatePID(uvicornCmd.Process.Pid, result.Id)
 		m.Db.UpdateState("run", result.Id)
-		fmt.Println("API ejecutada exitosamente")
+		return "API ejecutada exitosamente", nil, inExecution
 	} else {
-		fmt.Println("La API ya se esta ejecutnado")
+		inExecution := true
+		return "La API ya se esta ejecutnado", nil, inExecution
 	}
-
-	return nil
 }
