@@ -31,9 +31,9 @@ var runCmd = &cobra.Command{
 		}
 
 		if !inExecute {
-			fmt.Printf("\n%s\n", utils.Green(result))
+			fmt.Printf("\n%s\n\n", utils.Green(result))
 		} else {
-			fmt.Printf("\n%s\n", utils.Yellow(result))
+			fmt.Printf("\n%s\n\n", utils.Yellow(result))
 		}
 
 	},

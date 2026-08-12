@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"apiLunchLite/internal/utils"
 	"fmt"
 	"os"
 	"runtime"
@@ -18,7 +19,7 @@ func (m *ApiManager) Stop(nameStop string, forceStop bool) error {
 	procces, err := os.FindProcess(result.Pid)
 
 	if err != nil {
-		fmt.Println("No se encontró el proceso (ya podría estar detenido): ", err)
+		fmt.Printf("\n%s %v\n\n", utils.Yellow("No se encontró el proceso (ya podría estar detenido):"), err)
 		m.Db.UpdatePID(0, result.Id)
 		m.Db.UpdateState("stop", result.Id)
 		return err
@@ -36,14 +37,14 @@ func (m *ApiManager) Stop(nameStop string, forceStop bool) error {
 	}
 
 	if err != nil {
-		fmt.Println("Error Close Process: ", err)
+		fmt.Printf("\n%s %v\n\n", utils.Red("Error Close Process:"), err)
 		return err
 	}
 
 	m.Db.UpdatePID(0, result.Id)
 	m.Db.UpdateState("stop", result.Id)
 
-	fmt.Println("Proceso detenido exitosamente")
+	fmt.Printf("\n%s\n\n", utils.Green("Proceso detenido exitosamente"))
 
 	return nil
 }
