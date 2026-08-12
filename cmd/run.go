@@ -4,7 +4,9 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"apiLunchLite/internal/utils"
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -23,7 +25,16 @@ var runCmd = &cobra.Command{
 
 		fmt.Println("Intentando ejecutar la API")
 
-		apiMgr.Run(Api.Name, nameModule)
+		result, err, inExecute := apiMgr.Run(Api.Name, nameModule)
+		if err != nil {
+			log.Fatal("Error: ", err)
+		}
+
+		if !inExecute {
+			fmt.Printf("\n%s\n\n", utils.Green(result))
+		} else {
+			fmt.Printf("\n%s\n\n", utils.Yellow(result))
+		}
 
 	},
 }
