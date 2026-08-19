@@ -2,18 +2,24 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 )
 
 func SearchPythonExe(path string) string {
 	entries, err := os.ReadDir(path)
-
 	if err != nil {
+		log.Fatal("ERROR: ", err)
 		return ""
 	}
 
+	pythonBinari := "python3"
+	if runtime.GOOS == "Windows" {
+		pythonBinari = "python"
+	}
 	for _, entry := range entries {
 		fullPath := filepath.Join(path, entry.Name())
 
@@ -29,14 +35,13 @@ func SearchPythonExe(path string) string {
 				return resultado
 			}
 		} else {
-			if entry.Name() == "python.exe" {
+			if entry.Name() == pythonBinari {
 				return fullPath
 			}
-
 		}
 	}
 
-	pythonPathGlobal, err := exec.LookPath("python3") // O simplemente "python" en Windows
+	pythonPathGlobal, err := exec.LookPath(pythonBinari) // O simplemente "python" en Windows
 	if err != nil {
 		fmt.Println("No se encontró Python en el PATH global del sistema.")
 		return ""

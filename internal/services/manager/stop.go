@@ -26,14 +26,25 @@ func (m *ApiManager) Stop(nameStop string, forceStop bool) error {
 	}
 
 	if forceStop {
-		err = procces.Kill()
-	} else {
 		if runtime.GOOS == "windows" {
 			err = procces.Kill()
 		} else {
 			// En Linux/macOS se usa la señal SIGTERM estándar
 			err = procces.Signal(syscall.SIGTERM)
 		}
+
+		m.Db.UpdatePID(0, result.Id)
+		m.Db.UpdateState("stop", result.Id)
+
+		fmt.Printf("\n%s\n\n", utils.Yellow("Se forzo el cierre del proceso"))
+
+		return nil
+	}
+
+	if runtime.GOOS == "windows" {
+		err = procces.Kill()
+	} else {
+		err = procces.Signal(syscall.SIGTERM)
 	}
 
 	if err != nil {

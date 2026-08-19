@@ -2,6 +2,7 @@ package manager
 
 import (
 	"fmt"
+	"apiLunchLite/internal/utils"
 
 	"github.com/fatih/color"
 )
@@ -23,7 +24,7 @@ func (m *ApiManager) Delete(apiName string) error {
 
 	m.Db.Delete(result.Id)
 
-	fmt.Printf("\n%s %s\n", red(result.Name), red("Eliminado"))
+	fmt.Printf("\n%s %s\n", utils.Red(result.Name), red("Eliminado"))
 
 	return nil
 }
