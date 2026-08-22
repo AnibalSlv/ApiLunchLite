@@ -4,7 +4,6 @@ import (
 	"apiLunchLite/internal/utils"
 	"fmt"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +11,7 @@ var liveLog bool
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Muestra los log de la API",
-	Long: `apl log [Name API] -> Para ver el log de manera estatica 
+	Long: `apl log [Name API] -> Para ver el log de manera estatica
 			apl log [Name API] -l -> Para ver el log en vivo`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -33,12 +32,10 @@ var logCmd = &cobra.Command{
 			// Live Log
 			utils.Clear()
 
-			green := color.New(color.FgGreen).SprintFunc()
-
 			fmt.Printf("%s %s %s \n\n",
-				green("Monitoreando log de:"),
-				green(Api.Name),
-				green("(Ctrl+C para salir y cerrar API)"),
+				utils.Green("Monitoreando log de:"),
+				utils.Green(Api.Name),
+				utils.Green("(Ctrl+C para salir y cerrar API)"),
 			)
 
 			apiMgr.Logger.LiveLog(file.Name())
