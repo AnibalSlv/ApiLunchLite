@@ -37,7 +37,7 @@ func createTempFile(pythonPath string) (string, error) {
 }
 
 // Verifica que uvicorn este instalado
-func verifyDependency(pythonPath string) bool {
+func VerifyDependency(pythonPath string) bool {
 	tempFile, err := createTempFile(pythonPath)
 	if err != nil {
 		return false
