@@ -1,7 +1,6 @@
 package manager
 
 import (
-	"fmt"
 	"os/exec"
 	"strconv"
 
@@ -21,6 +20,12 @@ func (m *ApiManager) Run(name string, nameModule string) (string, error, bool) {
 		rootFolder := result.PathFolder
 
 		pythonPath := utils.SearchPythonExe(rootFolder)
+
+		vDependecy := utils.VerifyDependency(pythonPath)
+
+		if !vDependecy {
+			return "", nil, inExecution
+		}
 
 		// Sirve para que Go lea los argumentos por separado
 		uvicornArgs := []string{
@@ -44,8 +49,6 @@ func (m *ApiManager) Run(name string, nameModule string) (string, error, bool) {
 		uvicornCmd.Stderr = logFile
 
 		// Inicia el proceso sin bloquear el programa
-		fmt.Println("[Error] error aqui")
-		fmt.Printf("asd: %s \n\n", pythonPath)
 		err = uvicornCmd.Start()
 		if err != nil {
 			return "", err, inExecution

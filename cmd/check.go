@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"apiLunchLite/internal/utils"
+	"apiLunchLite/internal/utils/metric"
 	"fmt"
 	"log"
 	"os"
@@ -34,9 +35,12 @@ var checkCmd = &cobra.Command{
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
 
-		t.AppendHeader(table.Row{"ID", "Nombre", "Host", "State", "PID"})
+		t.AppendHeader(table.Row{"ID", "Nombre", "Host", "State", "PID", "CPU", "RAM"})
 
 		for _, api := range result {
+
+			apiCpu, apiRam := metric.Manager(int32(api.Pid))
+
 			displayState := utils.Capitalize(api.State)
 			switch api.State {
 			case "stop":
@@ -53,6 +57,8 @@ var checkCmd = &cobra.Command{
 				fmt.Sprintf("%s:%s", api.Host, utils.Yellow(strconv.Itoa(api.Port))),
 				displayState,
 				api.Pid,
+				fmt.Sprintf("%.2f%%", apiCpu),
+				fmt.Sprintf("%.2f Mb", apiRam),
 			})
 		}
 
