@@ -1,8 +1,8 @@
 package manager
 
 import (
-	"fmt"
 	"apiLunchLite/internal/utils"
+	"fmt"
 
 	"github.com/fatih/color"
 )
