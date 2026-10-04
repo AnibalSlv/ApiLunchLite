@@ -17,7 +17,11 @@ func (l *Logger) GetLogFile(name string) (*os.File, error) {
 
 	pathFile := filepath.Join("internal/logs", name+".log")
 
-	file, err := os.Create(pathFile)
+	// os.O_APPEND: Escribe al final del archivo.
+	// os.O_CREATE: Crea el archivo si no existe.
+	// os.O_WRONLY: Abre en modo solo escritura.
+	// 0644: Permisos de lectura/escritura para el propietario y lectura para otros.
+	file, err := os.OpenFile(pathFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
 		fmt.Println("Error Create File: ", err)

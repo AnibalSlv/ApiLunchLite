@@ -8,36 +8,21 @@ import (
 	"strings"
 )
 
-// Crea un archivo temporar con las librerias del lenguaje que el usuario selecciono
-func createTempFile(pythonPath string) (string, error) {
-
-	pathFile := "internal/temp/requeriment.txt"
-
-	file, err := os.Create(pathFile)
-
-	if err != nil {
-		fmt.Printf("\n%s: %v\n", Red("[Error] No se pudo crear el archivo tempRequeriment:"), err)
-		return "", err
-	}
-
-	cmd := exec.Command(pythonPath, "-m", "pip", "freeze")
-
-	cmd.Stdout = file
-
-	err = cmd.Run()
-
-	file.Close()
-
-	if err != nil {
-		fmt.Printf("\n%s: %v\n", Red("[Error] No se pudo verificar las dependencias:"), err)
-		return "", err
-	}
-
-	return pathFile, nil
-}
-
 // Verifica que uvicorn este instalado
 func VerifyDependency(pythonPath string) bool {
+
+	url := "internal/temp"
+
+	if _, err := os.Stat(url); os.IsNotExist(err) {
+		// Crear con permisos 0755 (lectura, escritura, ejecución para el dueño)
+		err = os.Mkdir(url, 0755)
+		if err != nil {
+			fmt.Println("Error al crear:", err)
+			return false
+		}
+		fmt.Println("Carpeta creada con éxito.")
+	}
+
 	tempFile, err := createTempFile(pythonPath)
 	if err != nil {
 		return false
@@ -48,7 +33,7 @@ func VerifyDependency(pythonPath string) bool {
 	readFile, err := os.Open(tempFile)
 
 	if err != nil {
-		fmt.Printf("%s: %v", Red("[Error] No se pudo leer las dependencias: "), err)
+		fmt.Printf("%s: %v", Red("[Error] Al abrir las dependencias"), err)
 		return false
 	}
 
@@ -76,4 +61,32 @@ func VerifyDependency(pythonPath string) bool {
 	}
 
 	return true
+}
+
+// Crea un archivo temporar con las librerias del lenguaje que el usuario selecciono
+func createTempFile(pythonPath string) (string, error) {
+
+	pathFile := "internal/temp/requeriment.txt"
+
+	file, err := os.Create(pathFile)
+
+	if err != nil {
+		fmt.Printf("\n%s: %v\n", Red("[Error] No se pudo crear el archivo tempRequeriment"), err)
+		return "", err
+	}
+
+	cmd := exec.Command(pythonPath, "-m", "pip", "freeze")
+
+	cmd.Stdout = file
+
+	err = cmd.Run()
+
+	file.Close()
+
+	if err != nil {
+		fmt.Printf("\n%s: %v\n", Red("[Error] No se pudo verificar las dependencias:"), err)
+		return "", err
+	}
+
+	return pathFile, nil
 }

@@ -45,7 +45,8 @@ var startCmd = &cobra.Command{
 		// Guarda el PID en un archivo
 		// []byte convierte el texto en bytes porque es lo que necesita la funcion para escrbir en el disco
 		// 0644 son los permisos (en Linux/Unix)
-		os.WriteFile("internal/logs/aplDaemon.pid", []byte(fmt.Sprintf("%d", clon.Process.Pid)), 0644)
+
+		//	os.WriteFile("internal/logs/aplDaemon.pid", []byte(fmt.Sprintf("%d", clon.Process.Pid)), 0644)
 
 		fmt.Println("✨ ¡Entorno listo! Puedes seguir usando tu terminal.")
 
