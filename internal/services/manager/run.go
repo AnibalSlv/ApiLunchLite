@@ -1,11 +1,11 @@
 package manager
 
 import (
-	"fmt"
 	"os/exec"
 	"strconv"
 
 	"apiLunchLite/internal/utils"
+	"apiLunchLite/internal/utils/verify"
 )
 
 func (m *ApiManager) Run(name string, nameModule string) (string, error, bool) {
@@ -22,11 +22,7 @@ func (m *ApiManager) Run(name string, nameModule string) (string, error, bool) {
 
 		pythonPath := utils.SearchPythonExe(rootFolder)
 
-		fmt.Print("PARTE ME EJECUTO 2")
-
-		vDependecy := utils.VerifyDependency(pythonPath)
-
-		fmt.Print("PARTE ME EJECUTO 3")
+		vDependecy := verify.VerifyDependency(pythonPath)
 
 		if !vDependecy {
 			return "", nil, inExecution
@@ -43,8 +39,6 @@ func (m *ApiManager) Run(name string, nameModule string) (string, error, bool) {
 		uvicornCmd := exec.Command(pythonPath, uvicornArgs...)
 
 		uvicornCmd.Dir = rootFolder
-
-		fmt.Print("PARTE ME EJECUTO 1")
 
 		logFile, err := m.Logger.GetLogFile(result.Name)
 		if err != nil {

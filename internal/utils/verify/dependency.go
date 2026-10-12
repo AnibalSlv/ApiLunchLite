@@ -1,6 +1,7 @@
-package utils
+package verify
 
 import (
+	"apiLunchLite/internal/utils"
 	"bufio"
 	"fmt"
 	"os"
@@ -11,17 +12,17 @@ import (
 // Verifica que uvicorn este instalado
 func VerifyDependency(pythonPath string) bool {
 
-	url := "internal/temp"
+	// url := "internal/temp"
 
-	if _, err := os.Stat(url); os.IsNotExist(err) {
-		// Crear con permisos 0755 (lectura, escritura, ejecución para el dueño)
-		err = os.Mkdir(url, 0755)
-		if err != nil {
-			fmt.Println("Error al crear:", err)
-			return false
-		}
-		fmt.Println("Carpeta creada con éxito.")
-	}
+	// if _, err := os.Stat(url); os.IsNotExist(err) {
+	// 	// Crear con permisos 0755 (lectura, escritura, ejecución para el dueño)
+	// 	err = os.Mkdir(url, 0755)
+	// 	if err != nil {
+	// 		fmt.Println("Error al crear:", err)
+	// 		return false
+	// 	}
+	// 	fmt.Println("Carpeta creada con éxito.")
+	// }
 
 	tempFile, err := createTempFile(pythonPath)
 	if err != nil {
@@ -33,7 +34,7 @@ func VerifyDependency(pythonPath string) bool {
 	readFile, err := os.Open(tempFile)
 
 	if err != nil {
-		fmt.Printf("%s: %v", Red("[Error] Al abrir las dependencias"), err)
+		fmt.Printf("%s: %v", utils.Red("[Error] Al abrir las dependencias"), err)
 		return false
 	}
 
@@ -51,12 +52,12 @@ func VerifyDependency(pythonPath string) bool {
 	}
 
 	if err = scanner.Err(); err != nil {
-		fmt.Printf("%s: %v", Red("[Error] No se pudo leer las dependencias: "), err)
+		fmt.Printf("%s: %v", utils.Red("[Error] No se pudo leer las dependencias: "), err)
 		return false
 	}
 
 	if !found {
-		fmt.Printf("%s", Yellow("Se necesita descargar uvicorn para poder ejecutar la API"))
+		fmt.Printf("%s", utils.Yellow("Se necesita descargar uvicorn para poder ejecutar la API"))
 		return false
 	}
 
@@ -71,7 +72,7 @@ func createTempFile(pythonPath string) (string, error) {
 	file, err := os.Create(pathFile)
 
 	if err != nil {
-		fmt.Printf("\n%s: %v\n", Red("[Error] No se pudo crear el archivo tempRequeriment"), err)
+		fmt.Printf("\n%s: %v\n", utils.Red("[Error] No se pudo crear el archivo tempRequeriment"), err)
 		return "", err
 	}
 
@@ -84,7 +85,7 @@ func createTempFile(pythonPath string) (string, error) {
 	file.Close()
 
 	if err != nil {
-		fmt.Printf("\n%s: %v\n", Red("[Error] No se pudo verificar las dependencias:"), err)
+		fmt.Printf("\n%s: %v\n", utils.Red("[Error] No se pudo verificar las dependencias:"), err)
 		return "", err
 	}
 
