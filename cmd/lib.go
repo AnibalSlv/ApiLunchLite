@@ -4,12 +4,11 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"apiLunchLite/internal/utils"
 	"fmt"
 
 	"github.com/spf13/cobra"
 )
-
-var updateLib bool
 
 var libCmd = &cobra.Command{
 	Use:   "lib",
@@ -17,18 +16,20 @@ var libCmd = &cobra.Command{
 	Long:  `apl lib [API]`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		Api.Name = args[0]
+		if len(args) == 0 || len(args) > 1 {
+			fmt.Printf("\n%s\n\n", utils.Red("[Error] Necesita colocar una API"))
 
-		fmt.Println("Verificando si hay librerias por actualizar")
+		} else {
+			Api.Name = args[0]
 
-		apiMgr.LibAll(Api.Name)
+			fmt.Println("Verificando las librerias")
 
-		fmt.Printf("\nLibrerias de %s actualizadas\n\n", Api.Name)
+			apiMgr.LibAll(Api.Name)
+
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(libCmd)
-
-	libCmd.Flags().BoolVar(&updateLib, "update", false, "Actualiza todas las librerias de la API a su ultima version disponible")
 }

@@ -7,6 +7,7 @@ import (
 	"os/exec"
 )
 
+// Crea un json temporal que contiene las librerias de la API
 func GetJson(pythonPath, filePath string, cmd *exec.Cmd) error {
 
 	file, err := os.Create(filePath)
