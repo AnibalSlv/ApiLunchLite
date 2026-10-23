@@ -15,20 +15,27 @@ func (m *ApiManager) LibAll(name string) error {
 	}
 
 	pythonPath := utils.SearchPythonExe(result.PathFolder)
-	cmd := exec.Command(pythonPath, "-m", "pip", "list", "--outdated", "--format=json")
+	cmdOut := exec.Command(pythonPath, "-m", "pip", "list", "--outdated", "--format=json")
+	cmdUpt := exec.Command(pythonPath, "-m", "pip", "list", "--uptodate", "--format=json")
 
-	filePath := "internal/temp/requeriment.json"
-	verify.GetJson(pythonPath, filePath, cmd)
+	filePathOut := "internal/temp/requerimentOut.json"
+	filePathUpt := "internal/temp/requerimentUpt.json"
+
+	verify.GetJson(pythonPath, filePathOut, cmdOut)
+	verify.GetJson(pythonPath, filePathUpt, cmdUpt)
 
 	// var fileLib []verify.FileLib <-- Este es el tipo de dato
-	fileLib := verify.ReadJson(filePath)
+	fileLibOut := verify.ReadJson(filePathOut)
+	fileLibUpt := verify.ReadJson(filePathUpt)
 
-	for _, api := range fileLib {
-		if api.Version != api.Latest_version {
-			fmt.Printf("\n%s requiere actualziacion %s -> %s\n", api.Name, utils.Yellow(api.Version), utils.Green(api.Latest_version))
-		} else {
-			fmt.Printf("\n%s ya tiene la ultima actualizacion\n", utils.Green(api.Name))
-		}
+	for _, api := range fileLibUpt {
+		fmt.Printf("\n%s %s\n", utils.Green(api.Name), api.Version)
+
 	}
+
+	for _, api := range fileLibOut {
+		fmt.Printf("\n%s %s -> %s\n", utils.Red(api.Name), utils.Yellow(api.Version), utils.Green(api.Latest_version))
+	}
+
 	return nil
 }
