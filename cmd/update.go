@@ -36,5 +36,5 @@ var updateCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(updateCmd)
 
-	libCmd.Flags().BoolVar(&updateAllLib, "all", false, "Actualiza todas las librerias de la API a su ultima version disponible")
+	updateCmd.Flags().BoolVar(&updateAllLib, "all", false, "Actualiza todas las librerias de la API a su ultima version disponible")
 }
